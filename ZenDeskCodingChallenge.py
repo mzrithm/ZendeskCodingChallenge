@@ -6,7 +6,7 @@ from datetime import datetime
 
 def display_menu():
     low = 1
-    high = 7
+    high = 8
     print("*************************************")
     print("Welcome to the Zendesk Ticket Viewer!")
     print("*************************************")
@@ -17,8 +17,9 @@ def display_menu():
         3: "Search Tickets by Subject",
         4: "Search Tickets by Description",
         5: "Search Tickets by Tag Identifier",
-        6: "Update Local Tickets from Zendesk API",
-        7: "Change Number of Tickets Displayed Per Page",
+        6: "Search Tickets by Ticket ID Number",
+        7: "Update Local Tickets from Zendesk API",
+        8: "Change Number of Tickets Displayed Per Page",
         "Q": "Quit Zendesk Ticket Viewer"
     }
     for key in menu:
@@ -142,8 +143,12 @@ def display_tickets(ticket_data, page):
                     print("\n", end="")
                     return
         if total < page and total == count:
-            print(f"There are {total} tickets displayed.")
-            print("\n", end="")
+            if total == 1:
+                print(f"There is {total} ticket displayed.")
+                print("\n", end="")
+            else:
+                print(f"There are {total} tickets displayed.")
+                print("\n", end="")
 
 
 def search_subject(ticket_data, search_term):
@@ -193,6 +198,22 @@ def search_tags(ticket_data, search_term):
         input()
     return search_results
 
+def search_ticket_id(ticket_data, id_number):
+    """docstring"""
+    search_results = {}
+    try:
+        search_results[id_number] = ticket_data[id_number]
+    except KeyError:
+        print(f"Ticket #{id_number} cannot be found.")
+    total = len(search_results)
+    if total == 0:
+        print(f"There are no results that match your ticket ID search for #{id_number}.")
+    else:
+        print(f"Ticket #{id_number} has been retrieved.")
+        print("Press any key to display results.")
+        input()
+    return search_results
+
 
 if __name__ == "__main__":
 
@@ -223,11 +244,23 @@ if __name__ == "__main__":
                 search_term = input().lower()
                 results = search_tags(ticket_data, search_term)
                 display_tickets(results, page)
-            elif user_input == 6:  # update local tickets from zendesk api
+            elif user_input == 6:
+                ticket_ids = list(ticket_data)
+                first_ticket = ticket_ids[0]
+                last_ticket = ticket_ids[-1]
+                print(f"You have Ticket IDs in the range of #{first_ticket} to #{last_ticket}.")
+                print(f"Please enter the * TICKET ID * number.")
+                id_number = input().strip()
+                if id_number.isnumeric():
+                    results = search_ticket_id(ticket_data, int(id_number))
+                    display_tickets(results, page)
+                else:
+                    print("Invalid entry. Please try again.")
+            elif user_input == 7:  # update local tickets from zendesk api
                 ticket_data = get_tickets()
                 print("* Your Zendesk API call was successful! *")
                 print("\n", end="")
-            elif user_input == 7:  # change number of tickets displayed per page scroll
+            elif user_input == 8:  # change number of tickets displayed per page scroll
                 print(f"You are currently seeing {page} ticket(s) per page.")
                 print("Please enter a number in the range of 1 to 25 -or- press any key to keep the default value.")
                 page_input = input()

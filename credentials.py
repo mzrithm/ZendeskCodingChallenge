@@ -3,7 +3,7 @@ TODO:
 1)  Go to: https://{YourSubdomain}.zendesk.com/admin/apps-integrations/apis/apis/settings
 2)  Enable password access for API calls
 3)  Complete the fields below for email, password, and subdomain
-4)  Run ZenDeskCodingChallenge.py to confirm that your login credentials are working
+4)  Run ZendeskCodingChallenge.py to confirm that your login credentials are working
 5)  Enjoy the Zendesk Ticket Viewer!
 """
 

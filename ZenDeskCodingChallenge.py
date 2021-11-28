@@ -1,3 +1,4 @@
+# from credentials import creds
 from creds import creds
 from zenpy import Zenpy
 from textwrap import wrap
@@ -356,7 +357,6 @@ def display_menu():
     else:
         print("\n", end="")
         print("* Invalid selection. Please try again. *")
-        print("\n", end="")
         return display_menu()
 
 
@@ -401,11 +401,9 @@ if __name__ == "__main__":
                 else:
                     print("\n", end="")
                     print("Invalid entry. Please try again or enter 'Q' to quit.")  # reprompt user
-                    print("\n", end="")
         elif user_input == 7:  # update local tickets from zendesk api
             zt.get_tickets()
             print("* Your Zendesk API call was successful! *")
-            print("\n", end="")
         elif user_input == 8:  # change number of tickets displayed per page scroll
             print(f"You are currently seeing {zt.get_page_display()} ticket(s) per page.")
             print("Please enter a number in the range of 1 to 25 -or- press any key to keep the default value.")
@@ -414,7 +412,6 @@ if __name__ == "__main__":
                 zt.set_page_display(int(page_input))
             print("\n", end="")
             print(f"* You will see {zt.get_page_display()} ticket(s) per page. *")
-            print("\n", end="")
         else:  # quit program; display_menu() validates data so this is the user selecting q or Q
             user_engaged = False
             print("Thank you for using the Zendesk Ticket Viewer. Goodbye!")

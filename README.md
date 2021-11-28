@@ -1,11 +1,10 @@
 # Zendesk Coding Challenge 2021
-___
 
 This is a **Zendesk Ticket Viewer** for the Zendesk customer service tool. This ticket viewer was created by me as part of the interview process for a **Zendesk Software Engineer Internship** for the **Summer of 2022**.
 
 ---
 
-#### Description:
+### Description:
 
 This **Zendesk Ticket Viewer** uses the **Zenpy** library to make a call to the **Zendesk API** and to display all tickets at the `CLI`. 
 
@@ -27,7 +26,7 @@ I hope you enjoy my work!
 
 ---
 
-#### Program Requirements:
+### Program Requirements:
 - Sign up for a free trial with [Zendesk](https://www.zendesk.com/register).
 - Take note of the email address you use, your password, and your subdomain. You will need this information to create your login credentials for Zendesk API calls.
 - Log in to your account and enable password access for Zendesk API calls. 
@@ -39,7 +38,7 @@ I hope you enjoy my work!
 
 ---
 
-#### Troubleshooting:
+### Troubleshooting:
 - Check that your email address, password, and subdomain are all typed correctly, enclosed by quotation marks, contain no extra spaces or characters, and no extra punctuation.
 - Passwords that included single or double quotation marks may not work; update your password and try again. 
 - New Zendesk accounts have password authentication for API calls disabled by default; go to `https://YourSubdomain.zendesk.com/admin/apps-integrations/apis/apis/settings`, where `YourSubdomain` is the subdomain you chose in your free trial sign up, and change this setting to `enabled`.

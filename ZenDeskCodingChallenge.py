@@ -3,6 +3,7 @@ from zenpy import Zenpy
 from textwrap import wrap
 from datetime import datetime
 
+
 def display_menu():
     low = 1
     high = 7
@@ -127,7 +128,8 @@ def display_tickets(ticket_data, page):
             if page == 1:
                 print(f"Ticket #{id} is displayed out of {total} tickets.")
             else:
-                print(f"Tickets #{id_list[id_list.index(id) - (page - 1)]} through #{id} are displayed out of {total} tickets.")
+                print(
+                    f"Tickets #{id_list[id_list.index(id) - (page - 1)]} through #{id} are displayed out of {total} tickets.")
 
             if list(ticket_data)[-1] == id:
                 print("This is the end of the ticket display.")
@@ -139,51 +141,101 @@ def display_tickets(ticket_data, page):
                 if user_input == 'q':
                     print("\n", end="")
                     return
+        if total < page and total == count:
+            print(f"There are {total} tickets displayed.")
+            print("\n", end="")
+
 
 def search_subject(ticket_data, search_term):
     """docstring"""
-    length = len(ticket_data)
     search_results = {}
     for ticket in ticket_data:
-        if search_term in ticket_data[ticket]["subject"]:
+        if search_term in ticket_data[ticket]["subject"].lower():
             search_results[ticket] = ticket_data[ticket]
+    total = len(search_results)
+    if total == 0:
+        print(f"There are no results that match your subject search for: {search_term}")
+    else:
+        print(f"There are {total} tickets that match your subject search for: {search_term}")
+        print("Press any key to display results.")
+        input()
     return search_results
+
+
+def search_description(ticket_data, search_term):
+    """docstring"""
+    search_results = {}
+    for ticket in ticket_data:
+        if search_term in ticket_data[ticket]["description"].lower():
+            search_results[ticket] = ticket_data[ticket]
+    total = len(search_results)
+    if total == 0:
+        print(f"There are no results that match your description search for: {search_term}")
+    else:
+        print(f"There are {total} tickets that match your description search for: {search_term}")
+        print("Press any key to display results.")
+        input()
+    return search_results
+
+
+def search_tags(ticket_data, search_term):
+    """docstring"""
+    search_results = {}
+    for ticket in ticket_data:
+        if search_term in ticket_data[ticket]["tags"]:
+            search_results[ticket] = ticket_data[ticket]
+    total = len(search_results)
+    if total == 0:
+        print(f"There are no results that match your tag search for: {search_term}")
+    else:
+        print(f"There are {total} tickets that match your tag search for: {search_term}")
+        print("Press any key to display results.")
+        input()
+    return search_results
+
 
 if __name__ == "__main__":
 
     user_engaged = True
-    page = 25
+    page = 25                               # default number of tickets displayed per page
     ticket_data = get_tickets()
     while user_engaged:
         user_input = display_menu()
-        if user_input.isnumeric():
+        if user_input.isnumeric():          # number is validated by display_menu()
             user_input = int(user_input)
-        if user_input == 1:             # display tickets
-            display_tickets(ticket_data, page)
-        elif user_input == 2:           # display search tags
-            get_tags_info(ticket_data)
-        elif user_input == 3:           # search tickets by subject
-            results = search_subject(ticket_data, "velit")
-            display_tickets(results, page)
-        elif user_input == 4:           # search tickets by description
-            pass
-        elif user_input == 5:           # search tickets by tag identifier
-            pass
-        elif user_input == 6:           # update local tickets from zendesk api
-            ticket_data = get_tickets()
-            print("* Your Zendesk API call was successful! *")
-            print("\n", end="")
-        elif user_input == 7:           # change number of tickets displayed per page scroll
-            print(f"You are currently seeing {page} ticket(s) per page.")
-            print("Please enter a number in the range of 1 to 25 -or- press any key to keep the default value.")
-            page_input = input()
-            if page_input.isnumeric() and 0 < int(page_input) < 26:
-                page = int(page_input)
-            print("\n", end="")
-            print(f"* You will now see {page} ticket(s) per page. *")
-            print("\n", end="")
-        else:
+            if user_input == 1:  # display tickets
+                display_tickets(ticket_data, page)
+            elif user_input == 2:  # display search tags
+                get_tags_info(ticket_data)
+            elif user_input == 3:  # search tickets by subject
+                print("Please enter the * SUBJECT * search term.")
+                search_term = input().lower()
+                results = search_subject(ticket_data, search_term)
+                display_tickets(results, page)
+            elif user_input == 4:  # search tickets by description
+                print("Please enter the * DESCRIPTION * search term.")
+                search_term = input().lower()
+                results = search_description(ticket_data, search_term)
+                display_tickets(results, page)
+            elif user_input == 5:  # search tickets by tag identifier
+                get_tags_info(ticket_data)
+                print("Please enter the * TAGS * search term.")
+                search_term = input().lower()
+                results = search_tags(ticket_data, search_term)
+                display_tickets(results, page)
+            elif user_input == 6:  # update local tickets from zendesk api
+                ticket_data = get_tickets()
+                print("* Your Zendesk API call was successful! *")
+                print("\n", end="")
+            elif user_input == 7:  # change number of tickets displayed per page scroll
+                print(f"You are currently seeing {page} ticket(s) per page.")
+                print("Please enter a number in the range of 1 to 25 -or- press any key to keep the default value.")
+                page_input = input()
+                if page_input.isnumeric() and 0 < int(page_input) < 26:
+                    page = int(page_input)
+                print("\n", end="")
+                print(f"* You will now see {page} ticket(s) per page. *")
+                print("\n", end="")
+        else:                   # quit program
             user_engaged = False
             print("Thank you for using the Zendesk Ticket Viewer. Goodbye!")
-
-

@@ -1,5 +1,4 @@
 from credentials import creds
-# from creds import creds
 from zenpy import Zenpy
 from textwrap import wrap
 from datetime import datetime
@@ -202,11 +201,11 @@ class ZendeskTicket:
                             f"Tickets #{id_list[id_list.index(id) - (page - 1)]} through #{id} are displayed out of {total} tickets.")
                     if list(tickets)[-1] == id:
                         print("This is the end of the ticket display.")
-                        print("Press any key to exit the display function.")
+                        print("Press <RETURN> to exit the display function.")
                         input()
                     else:
                         print(
-                            "Press any key to display the next batch of tickets -or- enter 'Q' to leave the ticket display.")
+                            "Press <RETURN> to display the next batch of tickets -or- enter 'Q' to leave the ticket display.")
                         user_input = input().lower()
                         if user_input == 'q':
                             print("\n", end="")
@@ -417,7 +416,7 @@ if __name__ == "__main__":
             print("* Your Zendesk API call was successful! *")
         elif user_input == 8:  # change number of tickets displayed per page scroll
             print(f"You are currently seeing {zt.get_page_display()} ticket(s) per page.")
-            print("Please enter a number in the range of 1 to 25 -or- press any key to keep the default value.")
+            print("Please enter a number in the range of 1 to 25 -or- press <RETURN> to keep the default value.")
             page_input = input().strip()
             if page_input.isnumeric() and 0 < int(page_input) < 26:
                 zt.set_page_display(int(page_input))

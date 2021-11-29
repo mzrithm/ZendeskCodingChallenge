@@ -404,7 +404,8 @@ if __name__ == "__main__":
                 id_number = input().strip()
                 if id_number.isnumeric() and first_ticket <= int(id_number) <= last_ticket:
                     searching = False       # if ticket id number is valid, retrieve ticket
-                    zt.search_ticket_id(int(id_number)) # this method calls display_tickets()
+                    zt.search_ticket_id(int(id_number))
+                    zt.display_tickets()
                 elif id_number.lower() == "q":
                     searching = False
                 else:

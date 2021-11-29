@@ -1,5 +1,4 @@
-# from credentials import creds
-from creds import creds
+from credentials import creds
 from zenpy import Zenpy
 from textwrap import wrap
 from datetime import datetime

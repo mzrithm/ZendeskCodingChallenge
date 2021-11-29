@@ -1,4 +1,5 @@
 from credentials import creds
+# from creds import creds
 from zenpy import Zenpy
 from textwrap import wrap
 from datetime import datetime
@@ -106,7 +107,7 @@ class ZendeskTicket:
         for id in self._tickets:
             for tag in self._tickets[id]["tags"]:
                 all_tags.append(tag)        # append all tags to a list
-        tags = set(all_tags)                # create a set of the list of tags to find all unique tags
+        tags = sorted(set(all_tags))        # create a set of the list of tags to find all unique tags
         if len(tags) == 0:                  # handle edge case where user has not applied tags to tickets
             print("There are no tags associated with your Zendesk tickets.")
             return

@@ -3,11 +3,12 @@ from creds import creds
 from zenpy import Zenpy
 from textwrap import wrap
 from datetime import datetime
+from time import sleep
 
 
 class ZendeskTicket:
     """
-    This class creates a Zendesk ticket object with three
+    This class creates a Zendesk ticket object with four
     private data members. This ticket object uses the Zenpy
     library to call the Zendesk API and populate a "tickets"
     data member with a python dictionary representing all
@@ -24,14 +25,15 @@ class ZendeskTicket:
         This method initializes a Zendesk Ticket object.
         All data members are private. The "tickets" data member
         is populated by a python dictionary representing all available
-        tickets on the user's account. The key is teh ticket ID number
-        and the value is a ticket dictionary object including all possible
-        data fields with their default values. Search results is initialized
+        tickets on the user's account. The key is the ticket ID number
+        and the value is a ticket dictionary object (including all possible
+        data fields with their default values). Search_results and tags are initialized
         as None, and the page_display is set to a default value of 25 tickets
         per page.
         """
         self._tickets = None
         self._search_results = None
+        self._tags = None
         self._page_display = 25
 
     def get_tickets(self):
@@ -48,6 +50,7 @@ class ZendeskTicket:
         # cause staggered timestamps on the tickets. Currently they are all the same timestamp.
         try:
             self._tickets = {}
+            self._tags = None   # prevents incorrect tags references in local data
             zenpy_client = Zenpy(**creds)
             for ticket in zenpy_client.tickets(type='ticket'):
                 self._tickets[ticket.id] = ticket.to_dict()
@@ -82,13 +85,22 @@ class ZendeskTicket:
         """
         self._page_display = new_page
 
+    def get_search_results(self):
+        """
+        This method allows access to the private data member "search_results"
+        from outside the ZendeskTicket class. Returns a dictionary of tickets
+        or None.
+        """
+        return self._search_results
+
     def get_tags_info(self):
         """
         This method reviews available ticket data in the ZendeskTicket object and
-        creates a set of all tags used along with a count of frequency of use of each tag.
+        creates a set of all tags used, along with a count of frequency of use of each tag.
+        The 'tags" data member is updated with the tags dictionary that this method creates.
         This method displays the total number of unique tags, followed by a
         formatted column display of tags, with the frequency count appearing after each tag
-        in parentheses. If there are no tags associated with the tags, this method
+        in parentheses. If there are no tags associated with the tickets, this method
         informs the user with a message and returns.
         """
         all_tags = []
@@ -103,6 +115,7 @@ class ZendeskTicket:
             tags_dict = {}                  # dictionary structure allows recording of tag as key with count as value
             for tag in tags:                # iterate through tags set to create key, and count the presence of tag in all_tags
                 tags_dict[tag] = all_tags.count(tag)
+            self._tags = tags_dict          # updates tags data member
             number = len(tags)
             print("\n", end="")
             print(f"There are {number} unique tags applied to your tickets.")
@@ -132,9 +145,9 @@ class ZendeskTicket:
 
     def display_tickets(self):
         """
-        This method displays all tickets associated with the Zendesk ticket object.
-        This method is modular and gives precedence to the "search_results" data member
-        over the "tickets" data member if the "search_results" data member is not None.
+        This method displays all tickets associated with the Zendesk ticket object's "tickets"
+        or "search_results" data member. This method is modular and gives precedence to the "search_results"
+        data member over the "tickets" data member if the "search_results" data member is not None.
         This method uses the "page_display" data member to determine tickets displayed per page.
         This method also prints descriptive messages for the user about what ticket ids are currently
         being displayed, how many tickets in total are being displayed, and when it is the end of the display.
@@ -214,7 +227,7 @@ class ZendeskTicket:
         the "search_results" data member with the search_results, if there are any,
         otherwise it displays a descriptive message for the user and returns.
         Given search_results, this method displays the number of tickets that
-        contain the search term in the subject field and calls display_tickets().
+        contain the search term in the subject field.
         """
         search_results = {}
         for ticket in self._tickets:    # the search methods could be made to be modular by passing a parameter with a string
@@ -225,10 +238,8 @@ class ZendeskTicket:
             print(f"There are no results that match your subject search for: {search_term}")
         else:
             print(f"There are {total} tickets that match your subject search for: {search_term}")
-            print("Press any key to display results.")
-            input()
+            sleep(2)
             self._search_results = search_results   # search_results have precedence so, only update data member if
-            self.display_tickets()                  # there is at least 1 ticket to display
 
     def search_description(self, search_term):
         """
@@ -237,7 +248,7 @@ class ZendeskTicket:
         the "search_results" data member with the search_results, if there are any,
         otherwise it displays a descriptive message for the user and returns.
         Given search_results, this method displays the number of tickets that
-        contain the search term in the description field and calls display_tickets().
+        contain the search term in the description field.
         """
         search_results = {}             # clone of search_subject for description field
         for ticket in self._tickets:
@@ -248,10 +259,8 @@ class ZendeskTicket:
             print(f"There are no results that match your description search for: {search_term}")
         else:
             print(f"There are {total} tickets that match your description search for: {search_term}")
-            print("Press any key to display results.")
-            input()
+            sleep(2)
             self._search_results = search_results   # only update data member if search_results exist
-            self.display_tickets()
 
     def search_tags(self, search_term):
         """This method accepts a search_term as a parameter and searches
@@ -259,7 +268,7 @@ class ZendeskTicket:
         the "search_results" data member with the search_results, if there are any,
         otherwise it displays a descriptive message for the user and returns.
         Given search_results, this method displays the number of tickets that
-        contain the search term in the tags field and calls display_tickets()."""
+        contain the search term in the tags field."""
         search_results = {}
         for ticket in self._tickets:
             if search_term in self._tickets[ticket]["tags"]:
@@ -269,10 +278,8 @@ class ZendeskTicket:
             print(f"There are no results that match your tag search for: {search_term}")
         else:
             print(f"There are {total} tickets that match your tag search for: {search_term}")
-            print("Press any key to display results.")
-            input()
+            sleep(2)
             self._search_results = search_results   # only update data member if search_results exist
-            self.display_tickets()
 
     def search_ticket_id(self, id_number):
         """
@@ -282,8 +289,7 @@ class ZendeskTicket:
         otherwise it displays a descriptive message for the user and returns.
         The id_number is validated in main() to fall in the range of available ticket IDs.
         This choice of external validation allows for re-prompting of the user for valid input.
-        Given search_results, this method displays when the ticket has been found
-        and calls display_tickets().
+        Given search_results, this method displays when the ticket has been found.
         """
         search_results = {}
         try:
@@ -295,10 +301,8 @@ class ZendeskTicket:
             print(f"There are no results that match your ticket ID search for #{id_number}.")
         else:
             print(f"Ticket #{id_number} has been retrieved.")
-            print("Press any key to display results.")
-            input()
+            sleep(2)
             self._search_results = search_results       # only update data member if search_results exist
-            self.display_tickets()
 
 
 def format_key_display(key):
@@ -325,7 +329,7 @@ def display_menu():
     This function displays a menu of choices that are methods of the
     ZendeskTicket class. This function is called by main().
     This function validates the user_input, and reprompts the user for alternate
-    input if it cannot validate it. Returns the validated input for main()
+    input if it cannot validate it. Returns the validated input to main()
     or an additional call of display_menu() to reprompt the user.
     """
     low = 1         # values allow easy updating of int validation
@@ -374,16 +378,22 @@ if __name__ == "__main__":
         elif user_input == 3:  # search tickets by subject
             print("Please enter the * SUBJECT * search term.")
             search_term = input().strip().lower()
-            zt.search_subject(search_term)  # this method calls display_tickets()
+            zt.search_subject(search_term)
+            if zt.get_search_results() is not None:
+                zt.display_tickets()
         elif user_input == 4:  # search tickets by description
             print("Please enter the * DESCRIPTION * search term.")
             search_term = input().strip().lower()
-            zt.search_description(search_term)  # this method calls display_tickets()
+            zt.search_description(search_term)
+            if zt.get_search_results() is not None:
+                zt.display_tickets()
         elif user_input == 5:  # search tickets by tag identifier
             zt.get_tags_info()  # display the tags for reference
             print("Please enter the * TAGS * search term.")
             search_term = input().strip().lower()
-            zt.search_tags(search_term)  # this method calls display_tickets()
+            zt.search_tags(search_term)
+            if zt.get_search_results() is not None:
+                zt.display_tickets()
         elif user_input == 6:  # search tickets by ticket id number
             ticket_ids = list(zt.get_ticket_data())
             first_ticket = ticket_ids[0]    # used to validate ticket id number

@@ -10,7 +10,7 @@ This **Zendesk Ticket Viewer** uses the **Zenpy** library to make a call to the 
 
 ![A screenshot of the zendesk ticket viewer menu](https://github.com/mzrithm/ZendeskCodingChallenge/blob/c44cb49ade4bcadbd23d2d20be1021556bb2a439/menu.png)
 
-Tickets are stored locally in a **ZendeskTicket** object. This object has a `tickets` data member that is populated by a python dictionary with the first API call. For this python dictionary, the key is the **Ticket ID Number** and the value is a single **Ticket Dictionary**. This structure is ideal as it allows rapid access of ticket information based on key queries that match ticket fields.
+Tickets are stored locally in a **ZendeskTicket** object. This object has a `tickets` data member that is populated by a python dictionary with the first API call. For this python dictionary, each key is the **Ticket ID Number** and the value is a single **Ticket Dictionary**. This structure is ideal as it allows rapid access of ticket information based on key queries that match ticket fields.
 
 ![A screenshot of a single ticket display](https://github.com/mzrithm/ZendeskCodingChallenge/blob/c44cb49ade4bcadbd23d2d20be1021556bb2a439/ticket.png)
 
@@ -26,7 +26,7 @@ The **ZendeskTicket** class includes methods that do the following:
 
 ![A screenshot of a tags display](https://github.com/mzrithm/ZendeskCodingChallenge/blob/c44cb49ade4bcadbd23d2d20be1021556bb2a439/tags.png)
 
-This **Zendesk Ticket Viewer** is run as a script from `main()` but the **ZendeskTicket** can also be used as an imported class. There are detailed docstrings regarding parameters, returns, and data validation for each class method and external function. 
+This **Zendesk Ticket Viewer** is run as a script from `main()` but the **ZendeskTicket** can also be used as an imported class. There are detailed docstrings regarding parameters, returns, and data validation for each class method and for other defined functions used by the class. 
 
 I hope you enjoy my work!
 
@@ -40,6 +40,7 @@ I hope you enjoy my work!
 - `Fork` this repo.
 - `Clone` the forked copy of this repo to your local computer.
 - Follow the directions in `credentials.py` to add your login credentials.
+- Need tickets to test? Post the included `tickets.json` file to your new account.
 - `Run ZendeskCodingChallenge.py`
 
 ---
@@ -48,6 +49,8 @@ I hope you enjoy my work!
 - Check that your email address, password, and subdomain are all typed correctly, enclosed by quotation marks, contain no extra spaces or characters, and no extra punctuation.
 - Passwords that included single or double quotation marks may not work; update your password and try again. 
 - New Zendesk accounts have password authentication for API calls disabled by default; go to `https://YourSubdomain.zendesk.com/admin/apps-integrations/apis/apis/settings`, where `YourSubdomain` is the subdomain you chose in your free trial sign up, and change this setting to `enabled`.
+- Try posting the `tickets.son` file to your new account using cURL:
+> `curl https://{YourSubdomain}.zendesk.com/api/v2/imports/tickets/create_many.json -v -u {your_email_address}:{your_password} POST -d @tickets.json -H "Content-Type:application/json"`
 
 ---
 

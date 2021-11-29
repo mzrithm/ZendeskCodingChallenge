@@ -1,4 +1,4 @@
-# Zendesk Coding Challenge 2021
+# Zendesk Coding Challenge 2021 🔖
 
 This is a **Zendesk Ticket Viewer** for the Zendesk customer service tool. This ticket viewer was created by me as part of the interview process for a **Zendesk Software Engineer Internship** for the **Summer of 2022**.
 
